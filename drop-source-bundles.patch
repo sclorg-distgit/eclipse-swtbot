@@ -1,0 +1,16 @@
+--- org.eclipse.swtbot.updatesite/category.xml.sav	2013-07-10 19:25:08.000000000 +0300
++++ org.eclipse.swtbot.updatesite/category.xml	2013-08-12 13:45:24.527751013 +0300
+@@ -69,13 +69,4 @@
+    <bundle id="org.hamcrest.library" version="0.0.0">
+       <category name="SWTBot -- Dependencies"/>
+    </bundle>
+-   <bundle id="org.apache.log4j.source" version="0.0.0">
+-      <category name="SWTBot -- Dependencies"/>
+-   </bundle>
+-   <bundle id="org.hamcrest.core.source" version="0.0.0">
+-      <category name="SWTBot -- Dependencies"/>
+-   </bundle>
+-   <bundle id="org.hamcrest.library.source" version="0.0.0">
+-      <category name="SWTBot -- Dependencies"/>
+-   </bundle>
+ </site>
