@@ -1,0 +1,21 @@
+--- org.eclipse.swtbot.junit4_x/src/org/eclipse/swtbot/swt/finder/junit/SWTBotJunit4ClassRunner.java.orig	2016-07-28 16:24:22.799452107 +0100
++++ org.eclipse.swtbot.junit4_x/src/org/eclipse/swtbot/swt/finder/junit/SWTBotJunit4ClassRunner.java	2016-07-28 16:25:33.957675993 +0100
+@@ -15,6 +15,7 @@
+ import java.lang.reflect.Method;
+ 
+ import org.eclipse.swtbot.swt.finder.junit.internal.ScreenshotCaptureNotifier;
++import org.junit.Ignore;
+ import org.junit.Test;
+ import org.junit.Test.None;
+ import org.junit.runner.Description;
+@@ -66,6 +67,10 @@
+ 		}
+ 	}
+ 
++	protected boolean isIgnored(FrameworkMethod child) {
++		return child.getAnnotation(Ignore.class) != null;
++	}
++
+ 	@Override
+ 	protected void runChild(final FrameworkMethod method, RunNotifier notifier) {
+ 		Description description = describeChild(method);
