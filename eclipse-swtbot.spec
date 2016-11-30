@@ -2,7 +2,7 @@
 %{!?scl:%global pkg_name %{name}}
 %{?java_common_find_provides_and_requires}
 
-%global baserelease 2
+%global baserelease 3
 
 Name:           %{?scl_prefix}eclipse-swtbot
 Version:        2.4.0
@@ -69,12 +69,20 @@ set -e -x
 %{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 set -e -x
 %mvn_install
+
+# remove spurious extra symlinks
+# (these are optional deps of log4j, that we don't need at runtime)
+sed -i -e '/\(geronimo\|mail\)/d' .mfiles
+rm -f %{buildroot}/%{_datadir}/eclipse/droplets/swtbot/eclipse/plugins/*{mail,geronimo}*
 %{?scl:EOF}
 
 
 %files -f .mfiles
 
 %changelog
+* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3.3
+- Remove spurious extra symlinks
+
 * Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3.2
 - Add patch for older version of junit
 
