@@ -2,10 +2,10 @@
 %{!?scl:%global pkg_name %{name}}
 %{?java_common_find_provides_and_requires}
 
-%global baserelease 3
+%global baserelease 1
 
 Name:           %{?scl_prefix}eclipse-swtbot
-Version:        2.4.0
+Version:        2.5.0
 Release:        3.%{baserelease}%{?dist}
 Summary:        UI and functional testing tool for SWT and Eclipse based applications
 
@@ -23,8 +23,6 @@ BuildRequires:  %{?scl_prefix_java_common}log4j
 BuildRequires:  %{?scl_prefix_java_common}hamcrest
 BuildArch:      noarch
 
-Patch0: junit_less_than_412.patch
-
 %description
 SWTBot is a Java based UI/functional testing tool for testing SWT and Eclipse
 based applications. SWTBot provides APIs that are simple to read and write.
@@ -35,8 +33,6 @@ it suitable for UI/functional testing by everyone, not just developers.
 %{?scl:scl enable %{scl_maven} %{scl} - << "EOF"}
 set -e -x
 %setup -q -n org.eclipse.swtbot-%{version}
-
-%patch0
 
 for j in $(find -name \*.jar); do
 if [ ! -L $j ] ; then
@@ -50,7 +46,11 @@ done
 %pom_disable_module org.eclipse.swtbot.nebula.gallery
 %pom_disable_module org.eclipse.swtbot.nebula.gallery.finder
 %pom_disable_module org.eclipse.swtbot.nebula.gallery.finder.test
+%pom_disable_module org.eclipse.swtbot.nebula.nattable
+%pom_disable_module org.eclipse.swtbot.nebula.nattable.finder
+%pom_disable_module org.eclipse.swtbot.nebula.nattable.finder.test
 
+%mvn_package "::pom::" __noinstall
 %mvn_package ":*.test" __noinstall
 %mvn_package ":*.test.*" __noinstall
 %mvn_package ":*.{examples,demo}" __noinstall
@@ -70,9 +70,10 @@ set -e -x
 set -e -x
 %mvn_install
 
-# remove spurious extra symlinks
-# (these are optional deps of log4j, that we don't need at runtime)
-sed -i -e '/\(geronimo\|mail\)/d' .mfiles
+# Remove uneeded extra symlinks
+# (these are optional deps of log4j, which we don't need at runtime)
+# Needed until fp-p2 can grow the features to make this possible in a better way
+sed -i -e '/\(geronimo\|mail\)/d' .mfiles %{buildroot}/%{_datadir}/eclipse/droplets/swtbot/eclipse/fragment.info
 rm -f %{buildroot}/%{_datadir}/eclipse/droplets/swtbot/eclipse/plugins/*{mail,geronimo}*
 %{?scl:EOF}
 
@@ -80,14 +81,17 @@ rm -f %{buildroot}/%{_datadir}/eclipse/droplets/swtbot/eclipse/plugins/*{mail,ge
 %files -f .mfiles
 
 %changelog
-* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3.3
-- Remove spurious extra symlinks
-
-* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3.2
-- Add patch for older version of junit
-
-* Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3.1
+* Mon Jan 16 2017 Mat Booth <mat.booth@redhat.com> - 2.5.0-3.1
 - Auto SCL-ise package for rh-eclipse46 collection
+
+* Wed Oct 26 2016 Mat Booth <mat.booth@redhat.com> - 2.5.0-3
+- Remove extraneous lines from fragment.info
+
+* Thu Oct 06 2016 Mat Booth <mat.booth@redhat.com> - 2.5.0-2
+- Remove uneeded symlinks to optional deps of log4j
+
+* Thu Sep 29 2016 Alexander Kurtakov <akurtako@redhat.com> 2.5.0-1
+- Update to upstream 2.5.0 release.
 
 * Thu Jul 28 2016 Mat Booth <mat.booth@redhat.com> - 2.4.0-3
 - Drop unnecessary BR on jacoco
